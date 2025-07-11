@@ -24,8 +24,15 @@
       height: 12px;
       background-color: white;
       border-radius: 50%;
-      box-shadow: 0 0 20px white;
+      box-shadow: 0 0 10px white;
       margin-bottom: 30px;
+      animation: pulse 1.5s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.3; box-shadow: 0 0 4px white; }
+      50% { opacity: 1; box-shadow: 0 0 20px white; }
+      100% { opacity: 0.3; box-shadow: 0 0 4px white; }
     }
 
     #text {
@@ -66,24 +73,28 @@
         if (charIndex < currentPhrase.length) {
           textElement.textContent += currentPhrase.charAt(charIndex);
           charIndex++;
-          delay = 100 + Math.random() * 200; // случайная задержка (нерешительность)
+          delay = 100 + Math.random() * 200;
           setTimeout(typeNextChar, delay);
         } else {
           textElement.textContent += "\n";
           phraseIndex++;
           charIndex = 0;
-          setTimeout(typeNextChar, 800); // пауза между фразами
+          setTimeout(typeNextChar, 800);
         }
       }
     }
 
-    // Запуск звука и текста при первом клике
+    // Печатает сразу
+    window.addEventListener("DOMContentLoaded", () => {
+      typeNextChar();
+    });
+
+    // Воспроизведение звука по первому тапу
     let started = false;
     document.body.addEventListener("click", () => {
       if (!started) {
         started = true;
-        audio.play();
-        typeNextChar();
+        audio.play().catch(() => {}); // если не дал разрешение
       }
     });
   </script>
