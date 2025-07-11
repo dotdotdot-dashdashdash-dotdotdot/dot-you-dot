@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>rewind</title>
+  <title>dot-you-dot</title>
+  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&display=swap" rel="stylesheet">
   <style>
     html, body {
       margin: 0;
       padding: 0;
-      background: black;
-      color: white;
-      font-family: 'Noto Sans JP', sans-serif;
+      height: 100%;
+      background-color: black;
+      font-family: 'Special Elite', monospace;
       display: flex;
-      flex-direction: column;
-      justify-content: center;
       align-items: center;
-      height: 100vh;
+      justify-content: center;
+      flex-direction: column;
       overflow: hidden;
     }
 
@@ -24,74 +24,68 @@
       height: 12px;
       background-color: white;
       border-radius: 50%;
-      box-shadow: 0 0 10px white;
-      margin-bottom: 24px;
-      animation: pulse 1.5s infinite ease-in-out;
+      box-shadow: 0 0 20px white;
+      margin-bottom: 30px;
     }
 
-    @keyframes pulse {
-      0% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.3); opacity: 0.5; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    .text {
-      font-size: 1.2rem;
-      max-width: 80%;
-      text-align: center;
+    #text {
+      color: white;
+      font-size: 20px;
       white-space: pre-wrap;
+      max-width: 90vw;
+      text-align: center;
+    }
+
+    audio {
+      display: none;
     }
   </style>
 </head>
 <body>
-
   <div class="dot"></div>
-  <div id="text" class="text"></div>
-
-  <audio id="rewind" src="cassette-tape-rewind-29103.mp3" preload="auto"></audio>
+  <div id="text"></div>
+  <audio id="audio" src="cassette-tape-rewind-29103.mp3"></audio>
 
   <script>
-    const lines = [
+    const textElement = document.getElementById("text");
+    const audio = document.getElementById("audio");
+
+    const phrases = [
       "rewind me.",
       "it only sounds like silence.",
       "but there's always an echo."
     ];
 
-    let currentLine = 0;
-    let audioPlayed = false;
+    let phraseIndex = 0;
+    let charIndex = 0;
+    let delay = 100;
 
-    function playAudioAndStartTyping() {
-      if (!audioPlayed) {
-        document.getElementById("rewind").play().catch(() => {});
-        audioPlayed = true;
-        typeLine(lines[currentLine]);
-      }
-    }
-
-    function typeLine(line) {
-      const container = document.getElementById("text");
-      container.textContent = "";
-      let i = 0;
-
-      function typeChar() {
-        if (i < line.length) {
-          container.textContent += line[i];
-          i++;
-          const delay = 60 + Math.random() * (i % 3 === 0 ? 300 : 100);
-          setTimeout(typeChar, delay);
+    function typeNextChar() {
+      if (phraseIndex < phrases.length) {
+        const currentPhrase = phrases[phraseIndex];
+        if (charIndex < currentPhrase.length) {
+          textElement.textContent += currentPhrase.charAt(charIndex);
+          charIndex++;
+          delay = 100 + Math.random() * 200; // случайная задержка (нерешительность)
+          setTimeout(typeNextChar, delay);
         } else {
-          currentLine++;
-          if (currentLine < lines.length) {
-            setTimeout(() => typeLine(lines[currentLine]), 1300);
-          }
+          textElement.textContent += "\n";
+          phraseIndex++;
+          charIndex = 0;
+          setTimeout(typeNextChar, 800); // пауза между фразами
         }
       }
-
-      typeChar();
     }
 
-    document.body.addEventListener("click", playAudioAndStartTyping);
-    document.body.addEventListener("touchstart", playAudioAndStartTyping);
+    // Запуск звука и текста при первом клике
+    let started = false;
+    document.body.addEventListener("click", () => {
+      if (!started) {
+        started = true;
+        audio.play();
+        typeNextChar();
+      }
+    });
   </script>
 </body>
 </html>
