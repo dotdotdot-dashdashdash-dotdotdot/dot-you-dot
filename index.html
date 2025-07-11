@@ -1,102 +1,47 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>dot-you-dot</title>
-  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&display=swap" rel="stylesheet">
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      background-color: black;
-      font-family: 'Special Elite', monospace;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      overflow: hidden;
-    }
+<script>
+  const textElement = document.getElementById("text");
+  const audio = document.getElementById("audio");
 
-    .dot {
-      width: 12px;
-      height: 12px;
-      background-color: white;
-      border-radius: 50%;
-      box-shadow: 0 0 10px white;
-      margin-bottom: 30px;
-      animation: pulse 1.5s infinite ease-in-out;
-    }
+  const lines = [
+    "rewind me.",
+    "it only sounds like silence.",
+    "but there's always an echo."
+  ];
 
-    @keyframes pulse {
-      0% { opacity: 0.3; box-shadow: 0 0 4px white; }
-      50% { opacity: 1; box-shadow: 0 0 20px white; }
-      100% { opacity: 0.3; box-shadow: 0 0 4px white; }
-    }
+  let lineIndex = 0;
+  let wordIndex = 0;
+  let words = [];
 
-    #text {
-      color: white;
-      font-size: 20px;
-      white-space: pre-wrap;
-      max-width: 90vw;
-      text-align: center;
-    }
+  function typeNextWord() {
+    if (lineIndex < lines.length) {
+      if (words.length === 0) {
+        words = lines[lineIndex].split(" ");
+        textElement.textContent += "\n";
+      }
 
-    audio {
-      display: none;
-    }
-  </style>
-</head>
-<body>
-  <div class="dot"></div>
-  <div id="text"></div>
-  <audio id="audio" src="cassette-tape-rewind-29103.mp3"></audio>
-
-  <script>
-    const textElement = document.getElementById("text");
-    const audio = document.getElementById("audio");
-
-    const phrases = [
-      "rewind me.",
-      "it only sounds like silence.",
-      "but there's always an echo."
-    ];
-
-    let phraseIndex = 0;
-    let charIndex = 0;
-    let delay = 100;
-
-    function typeNextChar() {
-      if (phraseIndex < phrases.length) {
-        const currentPhrase = phrases[phraseIndex];
-        if (charIndex < currentPhrase.length) {
-          textElement.textContent += currentPhrase.charAt(charIndex);
-          charIndex++;
-          delay = 100 + Math.random() * 200;
-          setTimeout(typeNextChar, delay);
-        } else {
-          textElement.textContent += "\n";
-          phraseIndex++;
-          charIndex = 0;
-          setTimeout(typeNextChar, 800);
-        }
+      if (wordIndex < words.length) {
+        textElement.textContent += words[wordIndex] + " ";
+        wordIndex++;
+        setTimeout(typeNextWord, 400 + Math.random() * 300);
+      } else {
+        wordIndex = 0;
+        words = [];
+        lineIndex++;
+        setTimeout(typeNextWord, 800);
       }
     }
+  }
 
-    // Печатает сразу
-    window.addEventListener("DOMContentLoaded", () => {
-      typeNextChar();
-    });
+  window.addEventListener("DOMContentLoaded", () => {
+    typeNextWord();
+  });
 
-    // Воспроизведение звука по первому тапу
-    let started = false;
-    document.body.addEventListener("click", () => {
-      if (!started) {
-        started = true;
-        audio.play().catch(() => {}); // если не дал разрешение
-      }
-    });
-  </script>
-</body>
-</html>
+  let started = false;
+  document.body.addEventListener("click", () => {
+    if (!started) {
+      started = true;
+      audio.play().catch(() => {});
+      plausible('sound_played');  // 🔍 отправляем кастомное событие
+    }
+  });
+</script>
