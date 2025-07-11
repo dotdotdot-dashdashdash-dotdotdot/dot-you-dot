@@ -4,66 +4,49 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>dot-you-dot</title>
-  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&display=swap" rel="stylesheet">
   <style>
     html, body {
       margin: 0;
       padding: 0;
-      height: 100%;
-      background-color: black;
-      font-family: 'Special Elite', monospace;
+      background: black;
+      color: white;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 20px;
       display: flex;
-      align-items: center;
       justify-content: center;
-      flex-direction: column;
+      align-items: center;
+      height: 100vh;
       overflow: hidden;
+      flex-direction: column;
     }
 
-    .dot {
-      width: 12px;
-      height: 12px;
-      background-color: white;
-      border-radius: 50%;
-      box-shadow: 0 0 10px white;
-      margin-bottom: 30px;
-      animation: pulse 1.5s infinite ease-in-out;
+    #cursor {
+      font-size: 24px;
+      color: white;
+      animation: blink 1s step-start infinite;
+      margin-bottom: 40px;
     }
 
-    @keyframes pulse {
-      0% { opacity: 0.3; box-shadow: 0 0 4px white; }
-      50% { opacity: 1; box-shadow: 0 0 20px white; }
-      100% { opacity: 0.3; box-shadow: 0 0 4px white; }
+    @keyframes blink {
+      50% { opacity: 0; }
     }
 
     #text {
-      color: white;
-      font-size: 20px;
       white-space: pre-wrap;
-      max-width: 90vw;
       text-align: center;
-    }
-
-    audio {
-      display: none;
+      line-height: 1.6;
+      padding: 0 10px;
     }
   </style>
-
-  <!-- 🔍 Plausible Analytics -->
-  <script defer data-domain="dotdotdot-dashdashdash-dotdotdot.github.io/dot-you-dot" src="https://plausible.io/js/script.file-downloads.hash.outbound-links.pageview-props.tagged-events.js"></script>
-  <script>
-    window.plausible = window.plausible || function() {
-      (window.plausible.q = window.plausible.q || []).push(arguments)
-    }
-  </script>
 </head>
 <body>
-  <div class="dot"></div>
+  <div id="cursor">•</div>
   <div id="text"></div>
-  <audio id="audio" src="cassette-tape-rewind-29103.mp3"></audio>
+  <audio id="rewind" src="cassette-tape-rewind-29103.mp3"></audio>
 
   <script>
-    const textElement = document.getElementById("text");
-    const audio = document.getElementById("audio");
+    const textElement = document.getElementById('text');
+    const rewind = document.getElementById('rewind');
 
     const lines = [
       "rewind me.",
@@ -72,40 +55,41 @@
     ];
 
     let lineIndex = 0;
-    let wordIndex = 0;
-    let words = [];
+    let charIndex = 0;
 
-    function typeNextWord() {
+    function typeLine() {
       if (lineIndex < lines.length) {
-        if (words.length === 0) {
-          words = lines[lineIndex].split(" ");
-          textElement.textContent += "\n";
-        }
-
-        if (wordIndex < words.length) {
-          textElement.textContent += words[wordIndex] + " ";
-          wordIndex++;
-          setTimeout(typeNextWord, 400 + Math.random() * 300);
+        const line = lines[lineIndex];
+        if (charIndex < line.length) {
+          textElement.textContent += line.charAt(charIndex);
+          charIndex++;
+          setTimeout(typeLine, 70);
         } else {
-          wordIndex = 0;
-          words = [];
+          textElement.textContent += "\n";
           lineIndex++;
-          setTimeout(typeNextWord, 800);
+          charIndex = 0;
+          setTimeout(typeLine, 700);
         }
       }
     }
 
-    window.addEventListener("DOMContentLoaded", () => {
-      typeNextWord();
-    });
-
-    let started = false;
-    document.body.addEventListener("click", () => {
-      if (!started) {
-        started = true;
-        audio.play().catch(() => {});
+    // Запуск звука и событие аналитики по первому касанию
+    document.addEventListener('click', () => {
+      if (rewind.paused) {
+        rewind.play();
+        if (window.plausible) plausible('sound_played');
       }
-    });
+    }, { once: true });
+
+    // Старт печати с задержкой
+    setTimeout(typeLine, 500);
+
+    // Plausible аналитика
+    window.plausible = window.plausible || function () {
+      (window.plausible.q = window.plausible.q || []).push(arguments);
+    };
   </script>
+  
+  <script defer data-domain="dotdotdot-dashdashdash-dotdotdot.github.io/dot-you-dot" src="https://plausible.io/js/script.file-downloads.hash.outbound-links.pageview-props.tagged-events.js"></script>
 </body>
 </html>
