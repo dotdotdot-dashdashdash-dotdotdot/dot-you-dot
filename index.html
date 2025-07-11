@@ -1,47 +1,108 @@
-<script>
-  const textElement = document.getElementById("text");
-  const audio = document.getElementById("audio");
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>rewind me</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+      font-family: 'Courier New', Courier, monospace;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
 
-  const lines = [
-    "rewind me.",
-    "it only sounds like silence.",
-    "but there's always an echo."
-  ];
+    #container {
+      text-align: center;
+      white-space: pre-line;
+      font-size: 1.5rem;
+      max-width: 90%;
+    }
 
-  let lineIndex = 0;
-  let wordIndex = 0;
-  let words = [];
+    .dot {
+      margin-top: 20px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: white;
+      animation: blink 1.2s infinite;
+      filter: drop-shadow(0 0 6px white);
+      display: inline-block;
+    }
 
-  function typeNextWord() {
-    if (lineIndex < lines.length) {
-      if (words.length === 0) {
-        words = lines[lineIndex].split(" ");
-        textElement.textContent += "\n";
-      }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.2; }
+    }
+  </style>
 
-      if (wordIndex < words.length) {
-        textElement.textContent += words[wordIndex] + " ";
-        wordIndex++;
-        setTimeout(typeNextWord, 400 + Math.random() * 300);
-      } else {
-        wordIndex = 0;
-        words = [];
-        lineIndex++;
-        setTimeout(typeNextWord, 800);
+  <!-- Plausible Analytics -->
+  <script defer data-domain="dotdotdot-dashdashdash-dotdotdot.github.io/dot-you-dot" src="https://plausible.io/js/script.file-downloads.hash.outbound-links.pageview-props.tagged-events.js"></script>
+  <script>
+    window.plausible = window.plausible || function() {
+      (window.plausible.q = window.plausible.q || []).push(arguments)
+    };
+  </script>
+</head>
+<body>
+  <div id="container">
+    <div id="text"></div>
+    <div class="dot"></div>
+  </div>
+  <audio id="audio" src="cassette-tape-rewind-29103.mp3"></audio>
+
+  <script>
+    const textElement = document.getElementById("text");
+    const audio = document.getElementById("audio");
+
+    const lines = [
+      "rewind me.",
+      "it only sounds like silence.",
+      "but there's always an echo."
+    ];
+
+    let lineIndex = 0;
+    let wordIndex = 0;
+    let words = [];
+
+    function typeNextWord() {
+      if (lineIndex < lines.length) {
+        if (words.length === 0) {
+          words = lines[lineIndex].split(" ");
+          textElement.textContent += "\n";
+        }
+
+        if (wordIndex < words.length) {
+          textElement.textContent += words[wordIndex] + " ";
+          wordIndex++;
+          setTimeout(typeNextWord, 400 + Math.random() * 300);
+        } else {
+          wordIndex = 0;
+          words = [];
+          lineIndex++;
+          setTimeout(typeNextWord, 800);
+        }
       }
     }
-  }
 
-  window.addEventListener("DOMContentLoaded", () => {
-    typeNextWord();
-  });
+    window.addEventListener("DOMContentLoaded", () => {
+      typeNextWord();
+    });
 
-  let started = false;
-  document.body.addEventListener("click", () => {
-    if (!started) {
-      started = true;
-      audio.play().catch(() => {});
-      plausible('sound_played');  // 🔍 отправляем кастомное событие
-    }
-  });
-</script>
+    let started = false;
+    document.body.addEventListener("click", () => {
+      if (!started) {
+        started = true;
+        audio.play().catch(() => {});
+        plausible('sound_played');
+      }
+    });
+  </script>
+</body>
+</html>
