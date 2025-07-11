@@ -3,58 +3,62 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>rewind me</title>
+  <title>dot-you-dot</title>
+  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&display=swap" rel="stylesheet">
   <style>
     html, body {
       margin: 0;
       padding: 0;
-      background: black;
-      color: white;
-      font-family: 'Courier New', Courier, monospace;
-      height: 100vh;
+      height: 100%;
+      background-color: black;
+      font-family: 'Special Elite', monospace;
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
+      flex-direction: column;
       overflow: hidden;
     }
 
-    #container {
-      text-align: center;
-      white-space: pre-line;
-      font-size: 1.5rem;
-      max-width: 90%;
-    }
-
     .dot {
-      margin-top: 20px;
       width: 12px;
       height: 12px;
+      background-color: white;
       border-radius: 50%;
-      background: white;
-      animation: blink 1.2s infinite;
-      filter: drop-shadow(0 0 6px white);
-      display: inline-block;
+      box-shadow: 0 0 10px white;
+      margin-bottom: 30px;
+      animation: pulse 1.5s infinite ease-in-out;
     }
 
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.2; }
+    @keyframes pulse {
+      0% { opacity: 0.3; box-shadow: 0 0 4px white; }
+      50% { opacity: 1; box-shadow: 0 0 20px white; }
+      100% { opacity: 0.3; box-shadow: 0 0 4px white; }
+    }
+
+    #text {
+      color: white;
+      font-size: 20px;
+      white-space: pre-wrap;
+      max-width: 90vw;
+      text-align: center;
+    }
+
+    audio {
+      display: none;
     }
   </style>
 
-  <!-- Plausible Analytics -->
+  <!-- 🔍 Plausible Analytics -->
   <script defer data-domain="dotdotdot-dashdashdash-dotdotdot.github.io/dot-you-dot" src="https://plausible.io/js/script.file-downloads.hash.outbound-links.pageview-props.tagged-events.js"></script>
   <script>
     window.plausible = window.plausible || function() {
       (window.plausible.q = window.plausible.q || []).push(arguments)
-    };
+    }
   </script>
 </head>
 <body>
-  <div id="container">
-    <div id="text"></div>
-    <div class="dot"></div>
-  </div>
+  <div class="dot"></div>
+  <div id="text"></div>
   <audio id="audio" src="cassette-tape-rewind-29103.mp3"></audio>
 
   <script>
@@ -100,7 +104,6 @@
       if (!started) {
         started = true;
         audio.play().catch(() => {});
-        plausible('sound_played');
       }
     });
   </script>
